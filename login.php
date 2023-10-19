@@ -6,8 +6,11 @@ include_once('header.php');
 $response = array();
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $email = $_POST["email"];
-    $password = $_POST["password"];
+    
+    $data = json_decode(file_get_contents('php://input'), true);
+    
+    $email = $data["email"];
+    $password = $data["password"];
 
     // Validation checks, you can also validate the email format here
 
