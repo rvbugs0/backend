@@ -1,6 +1,8 @@
 <?php
 // Include your database connection code
 
+include_once('header.php');
+
 $response = array();
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
