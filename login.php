@@ -3,7 +3,7 @@
 
 include_once('header.php');
 
-$response = array();
+$response =new stdClass(); 
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $email = $_POST["email"];
@@ -12,8 +12,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // Validation checks, you can also validate the email format here
 
     if (empty($email) || empty($password)) {
-        $response["success"] = false;
-        $response["message"] = "Email and password are required fields.";
+        $response->success = false;
+        $response->message = "Email and password are required fields.";
     } else {
         $sql = "SELECT id, password, role_id FROM users WHERE email = ?";
 
@@ -33,12 +33,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $_SESSION["email"] = $email;
             
 
-            $response["success"] = true;
-            $response["message"] = "Login successful.";
-            $response["role_id"] = 1;
+            $response->success = true;
+            $response->message = "Login successful.";
+            $response->role_id = 1;
         } else {
-            $response["success"] = false;
-            $response["message"] = "Invalid email or password.";
+            $response->success = false;
+            $response->message = 'Invalid email or password.';
         }
     
 
