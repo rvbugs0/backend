@@ -36,3 +36,12 @@ CREATE TABLE policies (
     timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (user_id) REFERENCES user(id)  -- Assuming 'users' is the users table
 );
+
+
+CREATE TABLE exam (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT NOT NULL,
+    schedule DATETIME,
+    max_score INT,
+    exam_name VARCHAR(255) NOT NULL
+);

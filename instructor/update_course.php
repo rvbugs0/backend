@@ -2,6 +2,7 @@
 // Include your database connection code
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    
     $course_id = $_POST["course_id"];
     $name = $_POST["name"];
     $code = $_POST["code"];
