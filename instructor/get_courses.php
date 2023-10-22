@@ -19,7 +19,7 @@ if ($_SERVER["REQUEST_METHOD"] == "GET") {
         return;
     } 
 
-
+    
 
 
     $courses = array(
