@@ -11,6 +11,14 @@ if ($_SERVER["REQUEST_METHOD"] == "GET") {
     //     $courses[] = $row;
     // }
 
+    $user_id = $_POST["instructor_id"];
+
+    // Check if instructor_id is a positive integer
+    if (!is_numeric($user_id) || $user_id <= 0 || $user_id != intval($user_id)) {
+        echo json_encode(["success" => false, "message" => "Instructor ID should be a positive integer."]);
+    } 
+
+
 
     $courses = array(
         array(
