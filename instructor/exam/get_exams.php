@@ -3,6 +3,13 @@
 
 if ($_SERVER["REQUEST_METHOD"] == "GET") {
     $user_id = $_GET["user_id"];
+    $course_id = $_GET["course_id"];
+
+
+    // Check if course_id is a positive integer
+    if (!is_numeric($course_id) || $course_id <= 0 || $course_id != intval($course_id)) {
+        echo json_encode(["success" => false, "message" => "Course ID should be a positive integer."]);
+    }
 
     // Check if user_id is a positive integer
     if (!is_numeric($user_id) || $user_id <= 0 || $user_id != intval($user_id)) {
@@ -38,7 +45,7 @@ if ($_SERVER["REQUEST_METHOD"] == "GET") {
             ),
             // Add more exams as needed
         );
-        
+
         // while ($row = $result->fetch_assoc()) {
         //     $exams[] = $row;
         // }

@@ -6,6 +6,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $schedule = $_POST["schedule"];
     $max_score = $_POST["max_score"];
     $exam_name = $_POST["exam_name"];
+    $course_id = $_POST["course_id"];
+
+    // Check if course_id is a positive integer
+    if (!is_numeric($course_id) || $course_id <= 0 || $course_id != intval($course_id)) {
+        echo json_encode(["success" => false, "message" => "Course ID should be a positive integer."]);
+    }
+
 
     // Check if user_id is a positive integer
     if (!is_numeric($user_id) || $user_id <= 0 || $user_id != intval($user_id)) {

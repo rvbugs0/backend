@@ -43,7 +43,25 @@ CREATE TABLE exam (
     user_id INT NOT NULL,
     schedule DATETIME,
     max_score INT,
-    exam_name VARCHAR(255) NOT NULL
+    exam_name VARCHAR(255) NOT NULL,
+     course_id INT NOT NULL,
+     FOREIGN KEY (course_id) REFERENCES course(id),
 );
 
+CREATE TABLE course_enrollment (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    student_id INT NOT NULL,
+    course_id INT NOT NULL,
+    FOREIGN KEY (student_id) REFERENCES user(id),
+    FOREIGN KEY (course_id) REFERENCES course(id)
+);
 
+CREATE TABLE student_exam_grade (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    student_id INT NOT NULL,
+    exam_id INT NOT NULL,
+    grade INT,
+    instructor_feedback TEXT,
+    FOREIGN KEY (student_id) REFERENCES user(id),
+    FOREIGN KEY (exam_id) REFERENCES exam(id)
+);
