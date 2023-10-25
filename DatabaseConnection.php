@@ -1,22 +1,28 @@
 <?php
-// Database configuration
-define("DB_HOST", "your_database_host");
-define("DB_USER", "your_database_username");
-define("DB_PASSWORD", "your_database_password");
-define("DB_NAME", "your_database_name");
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
 
-// Include the database configuration
-require_once 'config.php';
+class DatabaseConnection
+{
 
-// Function to establish a database connection
-function connectToDatabase() {
-    $conn = new mysqli(DB_HOST, DB_USER, DB_PASSWORD, DB_NAME);
+    public static function getConnection()
+    {
 
-    // Check for database connection errors
-    if ($conn->connect_error) {
-        die("Connection failed: " . $conn->connect_error);
+        $servername = "localhost:8889";
+        $username = "root";
+        $password = "password";
+        $database = "eduflex";
+
+        $conn = new mysqli($servername, $username, $password, $database);
+
+        if ($conn->connect_error) {
+            die("Connection failed: " . $conn->connect_error);
+        }
+
+        return $conn;
     }
-
-    return $conn;
 }
-?>
+
+
+// $db = new DatabaseConnection();
+// $con = $db->getConnection();

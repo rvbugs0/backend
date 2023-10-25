@@ -1,7 +1,6 @@
 <?php
-
 // Include your database connection code
-require_once 'DatabaseConnection.php';
+include_once('../DatabaseConnection.php');
 
 $response = array();
 
@@ -11,9 +10,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $phone = $_POST["phone"];
     $email = $_POST["email"];
     $password = password_hash($_POST["password"], PASSWORD_BCRYPT);
-    $role_id = $_POST["role_id"];
-
-
+    $role_id = 2; // Assuming Role ID 2 for Student
     
     // Validation checks
     if (strlen($first_name) < 2 || strlen($last_name) < 2) {
@@ -28,27 +25,21 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     } elseif (strlen($_POST["password"]) < 8) {
         $response["success"] = false;
         $response["message"] = "Password should be at least 8 characters.";
-    } elseif (!is_numeric($role_id) || $role_id <= 0) {
-        $response["success"] = false;
-        $response["message"] = "Role ID should be a positive integer.";
     } else {
-        
+        // Get the database connection
         $conn = DatabaseConnection::getConnection();
-        
-        // Prepare and execute the SQL statement
-        $sql = "INSERT INTO user (first_name, last_name, phone, email, password, role_id) VALUES (?, ?, ?, ?, ?, ?)";
-        
-        $stmt = $conn->prepare($sql);
-        
-        $stmt->bind_param('sssssi', $first_name, $last_name, $phone, $email, $password, $role_id);
 
-        
+        // Prepare the SQL statement to insert a new student
+        $sql = "INSERT INTO user (first_name, last_name, phone, email, password, role_id) VALUES (?, ?, ?, ?, ?, ?)";
+        $stmt = $conn->prepare($sql);
+        $stmt->bind_param("sssssi", $first_name, $last_name, $phone, $email, $password, $role_id);
+
         if ($stmt->execute()) {
             $response["success"] = true;
-            $response["message"] = "Registration successful.";
+            $response["message"] = "Student added successfully.";
         } else {
             $response["success"] = false;
-            $response["message"] = "Registration failed. ". $stmt->error; ;
+            $response["message"] = "Failed to add student. ". $stmt->error;
         }
 
         // Close the database connection

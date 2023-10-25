@@ -1,5 +1,7 @@
 <?php
 // Include your database connection code
+// Include your database connection code
+require_once 'DatabaseConnection.php';
 
 include_once('header.php');
 
@@ -15,46 +17,45 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $response["success"] = false;
         $response["message"] = "Email and password are required fields.";
     } else {
-        $sql = "SELECT id, password, role_id FROM users WHERE email = ?";
+        $conn = DatabaseConnection::getConnection();
 
-        // Execute the SQL statement with the email as a parameter
-        // Fetch the user's data
-        // Assuming you fetch the data into $user
-        $success = true;
-        $randomValue = (rand(0, 1) == 1);
+        // Prepare the SQL statement to fetch user data by email
+        $sql = "SELECT id, password, role_id FROM user WHERE email = ?";
+        $stmt = $conn->prepare($sql);
+        $stmt->bind_param("s", $email);
+        $stmt->execute();
+        $stmt->store_result();
 
-        if ($randomValue) {
-            $success= true;
-        } else {
-            $success = false;
-        }
+        if ($stmt->num_rows > 0) {
+            // Fetch the user's data
+            $stmt->bind_result($user_id, $hashed_password, $role_id);
+            $stmt->fetch();
 
-        if ($success) {
-            $_SESSION["email"] = $email;
-            
+            // Verify the password
+            if (password_verify($password, $hashed_password)) {
+                // Password is correct, set session variables
+                session_start();
+                $_SESSION["email"] = $email;
+                $_SESSION["user_id"] = $user_id;
+                $_SESSION["role_id"] = $role_id;
 
-            $response["success"] = true;
-            $response["message"] = "Login successful.";
-            $response["role_id"] = 1;
-            $response["user_id"] = 1;
+                $response["success"] = true;
+                $response["message"] = "Login successful.";
+                $response["email"] = $email;
+                $response["role_id"] = $role_id;
+                $response["user_id"] = $user_id;
+            } else {
+                $response['success'] = false;
+                $response['message'] = 'Invalid email or password.';
+            }
         } else {
             $response['success'] = false;
-            $response['message'] = 'Invalid email or password.';
+            $response['message'] = 'User not found.';
         }
-    
 
-
-        // if ($user && password_verify($password, $user["password"])) {
-        //     $_SESSION["user_id"] = $user["id"];
-        //     $_SESSION["role_id"] = $user["role_id"];
-
-        //     $response["success"] = true;
-        //     $response["message"] = "Login successful.";
-        //     $response["role_id"] = $user["role_id"];
-        // } else {
-        //     $response["success"] = false;
-        //     $response["message"] = "Invalid email or password.";
-        // }
+        // Close the database connection
+        $stmt->close();
+        $conn->close();
     }
 
     echo json_encode($response);
