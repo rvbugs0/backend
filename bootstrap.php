@@ -11,7 +11,7 @@ $sql1 = "
 CREATE TABLE `role` (
     `id` INT AUTO_INCREMENT PRIMARY KEY,
     `role_name` VARCHAR(255) NOT NULL
-);
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 INSERT INTO `role` (`role_name`) VALUES ('Admin');
 INSERT INTO `role` (`role_name`) VALUES ('Student');
@@ -30,7 +30,7 @@ CREATE TABLE `user` (
     `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     UNIQUE(`email`),
     FOREIGN KEY (`role_id`) REFERENCES `role`(`id`)
-);
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `course` (
     `id` INT AUTO_INCREMENT PRIMARY KEY,
@@ -39,7 +39,7 @@ CREATE TABLE `course` (
     `schedule` VARCHAR(200),
     `user_id` INT NOT NULL,
     FOREIGN KEY (`user_id`) REFERENCES `user`(`id`)
-);
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `policy` (
     `id` INT AUTO_INCREMENT PRIMARY KEY,
@@ -49,7 +49,7 @@ CREATE TABLE `policy` (
     `user_id` INT NOT NULL,
     `timestamp` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (`user_id`) REFERENCES `user`(`id`)
-);
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `exam` (
     `id` INT AUTO_INCREMENT PRIMARY KEY,
@@ -59,7 +59,7 @@ CREATE TABLE `exam` (
     `exam_name` VARCHAR(255) NOT NULL,
     `course_id` INT NOT NULL,
     FOREIGN KEY (`course_id`) REFERENCES `course`(`id`)
-);
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `course_enrollment` (
     `id` INT AUTO_INCREMENT PRIMARY KEY,
@@ -67,7 +67,7 @@ CREATE TABLE `course_enrollment` (
     `course_id` INT NOT NULL,
     FOREIGN KEY (`student_id`) REFERENCES `user`(`id`),
     FOREIGN KEY (`course_id`) REFERENCES `course`(`id`)
-);
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `student_exam_grade` (
     `id` INT AUTO_INCREMENT PRIMARY KEY,
@@ -78,7 +78,7 @@ CREATE TABLE `student_exam_grade` (
     FOREIGN KEY (`student_id`) REFERENCES `user`(`id`),
     FOREIGN KEY (`exam_id`) REFERENCES `exam`(`id`),
     UNIQUE KEY `unique_student_exam` (`student_id`, `exam_id`)
-);
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE message (
     id INT AUTO_INCREMENT PRIMARY KEY,
@@ -88,10 +88,7 @@ CREATE TABLE message (
     timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (sender_id) REFERENCES user(id),
     FOREIGN KEY (receiver_id) REFERENCES user(id)
-);
-
-
-
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 ";
 
