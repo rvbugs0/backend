@@ -41,7 +41,7 @@ CREATE TABLE `course` (
     FOREIGN KEY (`user_id`) REFERENCES `user`(`id`)
 );
 
-CREATE TABLE `policies` (
+CREATE TABLE `policy` (
     `id` INT AUTO_INCREMENT PRIMARY KEY,
     `title` VARCHAR(255) NOT NULL,
     `course_id` INT NOT NULL,

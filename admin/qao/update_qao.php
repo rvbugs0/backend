@@ -1,6 +1,6 @@
 <?php
 // Include your database connection code
-include_once('../DatabaseConnection.php');
+include_once('../../DatabaseConnection.php');
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $user_id = $_POST["user_id"];
     $first_name = $_POST["first_name"];
@@ -46,10 +46,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         if ($affectedRows > 0) {
 
             $response["success"] = true;
-            $response["message"] = "Student information updated successfully.";
+            $response["message"] = "Information updated successfully.";
         } else {
             $response["success"] = false;
-            $response["message"] = "Failed to update student information. " . $stmt->error;
+            $response["message"] = "Failed to update information. " . $stmt->error;
         }
 
         // Close the database connection

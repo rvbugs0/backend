@@ -1,5 +1,6 @@
 <?php
 // Include your database connection code
+require_once '../DatabaseConnection.php';
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $id = $_POST["policy_id"];
@@ -20,26 +21,36 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     elseif (!is_numeric($user_id) || $user_id <= 0 || $user_id != intval($user_id)) {
         echo json_encode(["success" => false, "message" => "User ID should be a positive integer."]);
     } else {
-        $sql = "UPDATE policies SET title = ?, course_id = ?, description = ?, user_id = ? WHERE id = ?";
-        // Execute the SQL statement with appropriate bindings
-        // Handle errors and success messages
-        
-        $success = true;
-        $randomValue = (rand(0, 1) == 1);
+        // Get the database connection
+        $conn = DatabaseConnection::getConnection();
 
-        if ($randomValue) {
-            $success= true;
-        } else {
-            $success = false;
-        }
+        // Prepare and execute the SQL statement to update the policy
+        $sql = "UPDATE policy SET title = ?, course_id = ?, description = ?, user_id = ? WHERE id = ?";
+        $stmt = $conn->prepare($sql);
+        $stmt->bind_param("sisii", $title, $course_id, $description, $user_id, $id);
 
+        // Execute the statement
+        $stmt->execute();
 
-        
+        // Check if the update was successful
+        $success = $stmt->affected_rows > 0;
+
+        // Handle success and error messages
+        $response = array();
+
         if ($success) {
-            echo json_encode(["success" => true, "message" => "Policy updated successfully."]);
+            $response["success"] = true;
+            $response["message"] = "Policy updated successfully.";
         } else {
-            echo json_encode(["success" => false, "message" => "Failed to update policy. Please try again later."]);
+            $response["success"] = false;
+            $response["message"] = "Failed to update policy. Please try again later.";
         }
+
+        echo json_encode($response);
+
+        // Close the database connection
+        $stmt->close();
+        $conn->close();
     }
 }
 ?>

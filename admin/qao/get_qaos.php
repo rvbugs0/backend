@@ -1,6 +1,6 @@
 <?php
 // Include your database connection code
-require_once '../DatabaseConnection.php';
+require_once '../../DatabaseConnection.php';
 
 if ($_SERVER["REQUEST_METHOD"] == "GET") {
 
@@ -9,7 +9,7 @@ if ($_SERVER["REQUEST_METHOD"] == "GET") {
     $conn = DatabaseConnection::getConnection();
 
     // Prepare and execute the SQL statement to select users with the specified role_id
-    $sql = "SELECT * FROM user WHERE role_id = 2";
+    $sql = "SELECT * FROM user WHERE role_id = 4";
     $stmt = $conn->prepare($sql);
     
 
