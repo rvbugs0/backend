@@ -9,9 +9,11 @@ if ($_SERVER["REQUEST_METHOD"] == "GET") {
     if (!is_numeric($student_id) || $student_id <= 0 || $student_id != intval($student_id)) {
         echo json_encode(["success" => false, "message" => "Student ID should be a positive integer."]);
     } else {
-        // Query the database to get a list of courses that the student is not enrolled in
-        $query = "SELECT * FROM course WHERE id NOT IN (SELECT course_id FROM course_enrollment WHERE student_id = ?)";
-        
+        // Query the database to get a list of courses with enrollment status
+        $query = "SELECT c.*, IF(ce.student_id IS NULL, 0, 1) AS enrolled
+                  FROM course c
+                  LEFT JOIN course_enrollment ce ON c.id = ce.course_id AND ce.student_id = ?";
+
         // Get the database connection
         $conn = DatabaseConnection::getConnection();
         $stmt = $conn->prepare($query);
@@ -20,15 +22,15 @@ if ($_SERVER["REQUEST_METHOD"] == "GET") {
         $result = $stmt->get_result();
 
         if ($result) {
-            $coursesNotEnrolled = [];
+            $coursesWithStatus = [];
 
             while ($row = $result->fetch_assoc()) {
-                $coursesNotEnrolled[] = $row;
+                $coursesWithStatus[] = $row;
             }
 
-            echo json_encode(["success" => true, "courses_not_enrolled" => $coursesNotEnrolled]);
+            echo json_encode(["success" => true, "courses_with_status" => $coursesWithStatus]);
         } else {
-            echo json_encode(["success" => false, "message" => "Failed to retrieve courses not enrolled. Please try again later."]);
+            echo json_encode(["success" => false, "message" => "Failed to retrieve courses with enrollment status. Please try again later."]);
         }
     }
 }
