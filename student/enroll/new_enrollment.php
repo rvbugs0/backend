@@ -1,5 +1,6 @@
 <?php
 // Include your database connection code
+require_once '../../DatabaseConnection.php';
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $student_id = $_POST["student_id"];
@@ -10,23 +11,22 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         !is_numeric($course_id) || $course_id <= 0 || $course_id != intval($course_id)) {
         echo json_encode(["success" => false, "message" => "Student ID and Course ID should be positive integers."]);
     } else {
+        $conn = DatabaseConnection::getConnection();
+
         $sql = "INSERT INTO course_enrollment (student_id, course_id) VALUES (?, ?)";
-        // Execute the SQL statement with appropriate bindings
-        // Handle errors and success messages
+        $stmt = $conn->prepare($sql);
+        $stmt->bind_param("ii", $student_id, $course_id);  // "ii" represents two integers
 
-        $success = true;
-        $randomValue = (rand(0, 1) == 1);
-
-        if ($randomValue) {
-            $success= true;
-        } else {
-            $success = false;
-        }
-        if ($success) {
+        // Execute the statement
+        if ($stmt->execute()) {
             echo json_encode(["success" => true, "message" => "Student enrolled in the course successfully."]);
         } else {
             echo json_encode(["success" => false, "message" => "Failed to enroll the student in the course. Please try again later."]);
         }
+
+        // Close the statement and the database connection
+        $stmt->close();
+        $conn->close();
     }
 }
 ?>

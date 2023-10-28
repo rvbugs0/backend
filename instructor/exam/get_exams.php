@@ -1,56 +1,45 @@
 <?php
 // Include your database connection code
+require_once '../../DatabaseConnection.php';
 
 if ($_SERVER["REQUEST_METHOD"] == "GET") {
-    $user_id = $_GET["user_id"];
+    // $user_id = $_GET["user_id"];
     $course_id = $_GET["course_id"];
-
 
     // Check if course_id is a positive integer
     if (!is_numeric($course_id) || $course_id <= 0 || $course_id != intval($course_id)) {
         echo json_encode(["success" => false, "message" => "Course ID should be a positive integer."]);
+        return;  // Exit the script
     }
 
-    // Check if user_id is a positive integer
-    if (!is_numeric($user_id) || $user_id <= 0 || $user_id != intval($user_id)) {
-        echo json_encode(["success" => false, "message" => "User ID should be a positive integer."]);
-    } else {
-        $sql = "SELECT * FROM exam WHERE user_id = ?";
-        // Execute the SQL statement with appropriate bindings
+    // // Check if user_id is a positive integer
+    // if (!is_numeric($user_id) || $user_id <= 0 || $user_id != intval($user_id)) {
+    //     echo json_encode(["success" => false, "message" => "User ID should be a positive integer."]);
+    //     return;  // Exit the script
+    // }
 
-        // Example of fetching data (you may need to customize this based on your database library):
-        // $exams = array();
+    $conn = DatabaseConnection::getConnection();
 
-        $exams = array(
-            array(
-                "id" => 1,
-                "user_id" => 1,
-                "schedule" => "2023-10-20 09:00:00",
-                "max_score" => 100,
-                "exam_name" => "Midterm Exam",
-            ),
-            array(
-                "id" => 2,
-                "user_id" => 2,
-                "schedule" => "2023-10-25 14:30:00",
-                "max_score" => 90,
-                "exam_name" => "Final Exam",
-            ),
-            array(
-                "id" => 3,
-                "user_id" => 1,
-                "schedule" => "2023-11-02 10:00:00",
-                "max_score" => 80,
-                "exam_name" => "Quiz 1",
-            ),
-            // Add more exams as needed
-        );
+    $sql = "SELECT * FROM exam WHERE course_id = ?";
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("i", $course_id);  // "i" represents an integer
 
-        // while ($row = $result->fetch_assoc()) {
-        //     $exams[] = $row;
-        // }
+    // Execute the statement
+    if ($stmt->execute()) {
+        $result = $stmt->get_result();
+        $exams = array();
+
+        while ($row = $result->fetch_assoc()) {
+            $exams[] = $row;
+        }
 
         echo json_encode(["success" => true, "exams" => $exams]);
+    } else {
+        echo json_encode(["success" => false, "message" => "Failed to fetch exams. Please try again later."]);
     }
+
+    // Close the statement and the database connection
+    $stmt->close();
+    $conn->close();
 }
 ?>

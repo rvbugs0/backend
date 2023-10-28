@@ -1,6 +1,8 @@
 <?php
 // Include your database connection code
 
+require_once '../../DatabaseConnection.php';
+
 if ($_SERVER["REQUEST_METHOD"] == "GET") {
     $student_id = $_GET["student_id"];
 
@@ -8,42 +10,45 @@ if ($_SERVER["REQUEST_METHOD"] == "GET") {
     if (!is_numeric($student_id) || $student_id <= 0 || $student_id != intval($student_id)) {
         echo json_encode(["success" => false, "message" => "Student ID should be a positive integer."]);
     } else {
-        $sql = "SELECT course.id, course.name, course.code, course.schedule FROM course
-                JOIN course_enrollment ON course.id = course_enrollment.course_id
-                WHERE course_enrollment.student_id = ?";
-        // Execute the SQL statement with appropriate bindings
+        $conn = DatabaseConnection::getConnection();
 
-        // Example of fetching data (you may need to customize this based on your database library):
-        $courses =  array(
-            array(
-                "id" => 1,
-                "name" => "Introduction to Programming",
-                "code" => "CS101",
-                "schedule" => "MWF 9:00 AM - 10:30 AM",
-                "instructor" => "John Smith",
-            ),
-            array(
-                "id" => 2,
-                "name" => "Web Development Fundamentals",
-                "code" => "WEB101",
-                "schedule" => "TTH 2:00 PM - 3:30 PM",
-                "instructor" => "Alice Johnson",
-            ),
-            array(
-                "id" => 3,
-                "name" => "Data Structures and Algorithms",
-                "code" => "CS201",
-                "schedule" => "MWF 1:00 PM - 2:30 PM",
-                "instructor" => "Bob Wilson",
-            ),
-            // Add more enrolled courses with instructor details as needed
-        );
+        // Modify the SQL statement to retrieve enrolled courses and instructor name
+        $sql = "SELECT c.*, CONCAT(u.first_name, ' ', u.last_name) AS instructor
+                FROM course c
+                INNER JOIN course_enrollment ce ON c.id = ce.course_id
+                INNER JOIN user u ON c.user_id = u.id
+                WHERE ce.student_id = ?";
         
-        // while ($row = $result->fetch_assoc()) {
-        //     $courses[] = $row;
-        // }
 
-        echo json_encode(["success" => true, "courses" => $courses]);
+
+                // Example of fetching data (you may need to customize this based on your database library):
+                // $courses =  array(
+                //     array(
+                //         "id" => 1,
+                //         "name" => "Introduction to Programming",
+                //         "code" => "CS101",
+                //         "schedule" => "MWF 9:00 AM - 10:30 AM",
+                //         "instructor" => "John Smith",
+                //     ),
+        
+        $stmt = $conn->prepare($sql);
+        $stmt->bind_param("i", $student_id);  // "i" represents an integer
+
+        // Execute the statement
+        if ($stmt->execute()) {
+            // Fetch the results
+            $result = $stmt->get_result();
+            $courses = $result->fetch_all(MYSQLI_ASSOC);
+            echo json_encode(["success" => true, "courses" => $courses]);
+        } else {
+            echo json_encode(["success" => false, "message" => "Failed to retrieve enrolled courses. Please try again later."]);
+        }
+
+        // Close the statement and the database connection
+        $stmt->close();
+        $conn->close();
     }
 }
 ?>
+
+

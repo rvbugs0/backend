@@ -54,7 +54,7 @@ CREATE TABLE `policy` (
 CREATE TABLE `exam` (
     `id` INT AUTO_INCREMENT PRIMARY KEY,
     `user_id` INT NOT NULL,
-    `schedule` DATETIME,
+    `schedule` TEXT,
     `max_score` INT,
     `exam_name` VARCHAR(255) NOT NULL,
     `course_id` INT NOT NULL,
@@ -76,7 +76,8 @@ CREATE TABLE `student_exam_grade` (
     `grade` INT,
     `instructor_feedback` TEXT,
     FOREIGN KEY (`student_id`) REFERENCES `user`(`id`),
-    FOREIGN KEY (`exam_id`) REFERENCES `exam`(`id`)
+    FOREIGN KEY (`exam_id`) REFERENCES `exam`(`id`),
+    UNIQUE KEY `unique_student_exam` (`student_id`, `exam_id`)
 );";
 
 // Execute SQL statements and print success or error messages
