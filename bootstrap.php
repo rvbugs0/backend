@@ -78,7 +78,22 @@ CREATE TABLE `student_exam_grade` (
     FOREIGN KEY (`student_id`) REFERENCES `user`(`id`),
     FOREIGN KEY (`exam_id`) REFERENCES `exam`(`id`),
     UNIQUE KEY `unique_student_exam` (`student_id`, `exam_id`)
-);";
+);
+
+CREATE TABLE message (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    sender_id INT NOT NULL,
+    receiver_id INT NOT NULL,
+    content TEXT,
+    timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (sender_id) REFERENCES user(id),
+    FOREIGN KEY (receiver_id) REFERENCES user(id)
+);
+
+
+
+
+";
 
 // Execute SQL statements and print success or error messages
 if ($conn->multi_query($sql1) === TRUE) {
