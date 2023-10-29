@@ -9,7 +9,7 @@ if ($_SERVER["REQUEST_METHOD"] == "GET") {
     $conn = DatabaseConnection::getConnection();
 
     // Prepare and execute the SQL statement to select users with the specified role_id
-    $sql = "SELECT * FROM user WHERE role_id = 3";
+    $sql = "SELECT * FROM user WHERE role_id = 5";
     $stmt = $conn->prepare($sql);
     
 
