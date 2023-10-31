@@ -12,7 +12,8 @@ if ($_SERVER["REQUEST_METHOD"] == "GET") {
     } else {
         // Retrieve a list of students who are enrolled in the course associated with the given exam ID
         // and their grades for the specified exam
-        $query = "SELECT u.id AS student_id, CONCAT(u.first_name, ' ', u.last_name) AS student_name, seg.exam_id,seg.grade,seg.instructor_feedback
+        $query = "SELECT u.id AS student_id, CONCAT(u.first_name, ' ', u.last_name) AS student_name, 
+        seg.exam_id,seg.grade,seg.instructor_feedback
                   FROM student_exam_grade seg
                   JOIN user u ON seg.student_id = u.id
                   WHERE seg.exam_id = ?";

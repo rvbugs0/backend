@@ -1,5 +1,6 @@
 <?php
 // Include your database connection code
+
 require_once '../DatabaseConnection.php';
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
@@ -7,7 +8,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $title = $_POST["title"];
     $course_id = $_POST["course_id"];
     $description = $_POST["description"];
-    $user_id = $_POST["user_id"];
+    
 
     // Check if title and description meet the length requirement
     if (strlen($title) < 3 || strlen($description) < 3) {
@@ -18,16 +19,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         echo json_encode(["success" => false, "message" => "Course ID should be a positive integer."]);
     }
     // Check if user_id is a positive integer
-    elseif (!is_numeric($user_id) || $user_id <= 0 || $user_id != intval($user_id)) {
-        echo json_encode(["success" => false, "message" => "User ID should be a positive integer."]);
-    } else {
+     else {
         // Get the database connection
         $conn = DatabaseConnection::getConnection();
 
         // Prepare and execute the SQL statement to update the policy
-        $sql = "UPDATE policy SET title = ?, course_id = ?, description = ?, user_id = ? WHERE id = ?";
+        $sql = "UPDATE policy SET title = ?, course_id = ?, description = ?  WHERE id = ?";
         $stmt = $conn->prepare($sql);
-        $stmt->bind_param("sisii", $title, $course_id, $description, $user_id, $id);
+        $stmt->bind_param("sisi", $title, $course_id, $description,  $id);
 
         // Execute the statement
         $stmt->execute();
@@ -43,7 +42,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $response["message"] = "Policy updated successfully.";
         } else {
             $response["success"] = false;
-            $response["message"] = "Failed to update policy. Please try again later.";
+            $response["message"] = "Failed to update policy. Please try again later. ". $stmt->error;
         }
 
         echo json_encode($response);
