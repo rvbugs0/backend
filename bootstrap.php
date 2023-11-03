@@ -90,6 +90,14 @@ CREATE TABLE message (
     FOREIGN KEY (receiver_id) REFERENCES user(id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+CREATE TABLE contact_form (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(255) NOT NULL,
+    email VARCHAR(255) NOT NULL,
+    message TEXT NOT NULL
+);
+
+
 ";
 
 // Execute SQL statements and print success or error messages
