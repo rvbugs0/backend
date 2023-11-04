@@ -38,6 +38,7 @@ CREATE TABLE `course` (
     `code` VARCHAR(10) NOT NULL,
     `schedule` VARCHAR(200),
     `user_id` INT NOT NULL,
+    `course_content` TEXT DEFAULT '',
     FOREIGN KEY (`user_id`) REFERENCES `user`(`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
