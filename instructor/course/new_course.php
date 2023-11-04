@@ -7,6 +7,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $code = $_POST["code"];
     $schedule = $_POST["schedule"];
     $user_id = $_POST["user_id"];
+    $course_content = isset($_POST["course_content"]) ? $_POST["course_content"] : ''; // Set course_content to empty string if not provided
+    
 
     // Check if name and code meet the length requirement
     if (strlen($name) < 2 || strlen($name) > 255 || strlen($code) < 4 || strlen($code) > 10) {
@@ -20,9 +22,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $conn = DatabaseConnection::getConnection();
 
         // Prepare and execute the SQL statement
-        $sql = "INSERT INTO course (name, code, schedule, user_id) VALUES (?, ?, ?, ?)";
+        $sql = "INSERT INTO course (name, code, schedule, user_id,course_content) VALUES (?, ?, ?, ?,?)";
         $stmt = $conn->prepare($sql);
-        $stmt->bind_param("sssi", $name, $code, $schedule, $user_id);
+        $stmt->bind_param("sssis", $name, $code, $schedule, $user_id, $course_content);
         $stmt->execute();
 
         if ($stmt->affected_rows > 0) {

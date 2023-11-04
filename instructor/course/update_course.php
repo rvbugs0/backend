@@ -7,6 +7,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $name = $_POST["name"];
     $code = $_POST["code"];
     $schedule = $_POST["schedule"];
+    $course_content = isset($_POST["course_content"]) ? $_POST["course_content"] : ''; // Set course_content to empty string if not provided
     
 
     // Check if course_id is a positive integer
@@ -19,12 +20,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     }
      else {
         // Update course details in the database
-        $query = "UPDATE course SET name = ?, code = ?, schedule = ? WHERE id = ?";
+        $query = "UPDATE course SET name = ?, code = ?, schedule = ?,course_content=? WHERE id = ?";
         
         // Get the database connection
         $conn = DatabaseConnection::getConnection();
         $stmt = $conn->prepare($query);
-        $stmt->bind_param("sssi", $name, $code, $schedule, $course_id);
+        $stmt->bind_param("ssssi", $name, $code, $schedule,$course_content, $course_id);
         $result = $stmt->execute();
 
         // Check for success or failure and return a response
